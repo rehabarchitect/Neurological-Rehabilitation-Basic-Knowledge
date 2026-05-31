@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>กายภาพบำบัดระบบประสาทผู้ใหญ่ — สรุปความรู้พื้นฐาน</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0f0d;
+    --surface: #111a15;
+    --surface2: #172010;
+    --border: #1e3024;
+    --accent: #4ade80;
+    --accent2: #facc15;
+    --accent3: #38bdf8;
+    --accent4: #fb923c;
+    --text: #e8f0ea;
+    --text-muted: #6b8f74;
+    --text-dim: #334d3a;
+    --green: #4ade80;
+    --red: #f87171;
+    --blue: #38bdf8;
+    --orange: #fb923c;
+    --yellow: #facc15;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans Thai', 'Sarabun', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 0 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-inner {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .header-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+
+  .header h1 {
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.2rem;
+  }
+
+  .header-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 1.25rem;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    padding: 0.6rem 1.2rem;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    font-family: 'IBM Plex Sans Thai', 'Sarabun', sans-serif;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* MAIN */
+  .main {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .section { display: none; animation: fadeIn 0.3s ease; }
+  .section.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+  }
+
+  .section-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* CARDS */
+  .cards { display: flex; flex-direction: column; gap: 1rem; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .card-header {
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    transition: background 0.15s;
+  }
+  .card-header:hover { background: var(--surface2); }
+
+  .card-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .card-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .card-title { font-size: 14px; font-weight: 600; color: var(--text); }
+  .card-subtitle { font-size: 12px; color: var(--text-muted); }
+  .card-chevron { color: var(--text-dim); font-size: 12px; transition: transform 0.2s; flex-shrink: 0; }
+  .card.open .card-chevron { transform: rotate(180deg); }
+
+  .card-body {
+    display: none;
+    padding: 0 1.25rem 1.25rem;
+    border-top: 1px solid var(--border);
+  }
+  .card.open .card-body { display: block; }
+
+  /* TABLE */
+  .tbl { width: 100%; border-collapse: collapse; font-size: 13px; margin: 1rem 0; }
+  .tbl th {
+    background: var(--surface2);
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .tbl td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; }
+  .tbl tr:last-child td { border-bottom: none; }
+  .tbl tr:hover td { background: var(--surface2); }
+
+  /* BADGES */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .badge-green { background: rgba(74,222,128,0.12); color: var(--green); }
+  .badge-yellow { background: rgba(250,204,21,0.12); color: var(--yellow); }
+  .badge-blue { background: rgba(56,189,248,0.12); color: var(--blue); }
+  .badge-orange { background: rgba(251,146,60,0.12); color: var(--orange); }
+  .badge-red { background: rgba(248,113,113,0.12); color: var(--red); }
+
+  /* INFO BLOCKS */
+  .info-block {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.875rem 1rem;
+    margin: 0.75rem 0;
+    font-size: 13px;
+  }
+  .info-block.green { border-left: 3px solid var(--green); }
+  .info-block.yellow { border-left: 3px solid var(--yellow); }
+  .info-block.blue { border-left: 3px solid var(--blue); }
+  .info-block.orange { border-left: 3px solid var(--orange); }
+  .info-block.red { border-left: 3px solid var(--red); }
+
+  .info-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .green .info-label { color: var(--green); }
+  .yellow .info-label { color: var(--yellow); }
+  .blue .info-label { color: var(--blue); }
+  .orange .info-label { color: var(--orange); }
+  .red .info-label { color: var(--red); }
+
+  /* COMPARE */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin: 1rem 0;
+  }
+  .compare-col {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.875rem;
+  }
+  .compare-col-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--text-muted);
+  }
+  .compare-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; }
+  .compare-col li { font-size: 13px; padding-left: 0.75rem; position: relative; color: var(--text); }
+  .compare-col li::before { content: '—'; position: absolute; left: 0; color: var(--text-dim); }
+
+  /* BODY TEXT */
+  p { font-size: 13px; color: var(--text); margin: 0.5rem 0; }
+  h3 {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 1.25rem 0 0.5rem;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  ul.plain { list-style: none; display: flex; flex-direction: column; gap: 0.25rem; }
+  ul.plain li { font-size: 13px; padding-left: 1rem; position: relative; }
+  ul.plain li::before { content: '›'; position: absolute; left: 0; color: var(--accent); }
+
+  /* INTERACTIVE SCALE */
+  .scale-selector {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin: 0.75rem 0;
+  }
+  .scale-btn {
+    padding: 0.35rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: none;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .scale-btn:hover { border-color: var(--accent); color: var(--text); }
+  .scale-btn.active { background: rgba(74,222,128,0.1); border-color: var(--accent); color: var(--accent); }
+
+  .scale-detail {
+    background: var(--surface2);
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    padding: 0.875rem 1rem;
+    font-size: 13px;
+    display: none;
+    margin-top: 0.5rem;
+  }
+  .scale-detail.show { display: block; }
+  .scale-detail-title { font-weight: 700; color: var(--accent); margin-bottom: 0.3rem; }
+
+  /* PATHWAY */
+  .pathway { display: flex; flex-direction: column; gap: 0; }
+  .pathway-step {
+    display: flex;
+    gap: 0;
+  }
+  .pathway-left {
+    width: 80px;
+    flex-shrink: 0;
+    text-align: right;
+    padding-right: 1rem;
+    padding-top: 0.75rem;
+    font-size: 12px;
+    color: var(--accent);
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+  }
+  .pathway-line {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 20px;
+    flex-shrink: 0;
+  }
+  .pathway-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-top: 0.85rem;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 0 8px rgba(74,222,128,0.4);
+  }
+  .pathway-connector {
+    width: 1px;
+    flex: 1;
+    background: var(--border);
+    min-height: 8px;
+  }
+  .pathway-step:last-child .pathway-connector { display: none; }
+  .pathway-content {
+    flex: 1;
+    padding: 0.5rem 0 0.5rem 0.75rem;
+    font-size: 13px;
+    color: var(--text);
+  }
+
+  /* EVIDENCE BARS */
+  .evidence-list { display: flex; flex-direction: column; gap: 0.5rem; margin: 1rem 0; }
+  .evidence-item { display: flex; align-items: center; gap: 0.75rem; font-size: 13px; }
+  .evidence-name { width: 220px; flex-shrink: 0; color: var(--text); }
+  .evidence-bar-wrap { flex: 1; height: 8px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+  .evidence-bar { height: 100%; border-radius: 4px; transition: width 0.8s ease; }
+  .evidence-label { font-size: 11px; color: var(--text-muted); width: 80px; text-align: right; font-family: 'IBM Plex Mono', monospace; }
+
+  /* QUIZ */
+  .quiz-container { display: flex; flex-direction: column; gap: 1.5rem; }
+  .quiz-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .quiz-q { padding: 1rem 1.25rem; font-size: 14px; font-weight: 600; border-bottom: 1px solid var(--border); }
+  .quiz-num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text-muted); margin-bottom: 0.3rem; }
+  .quiz-options { padding: 0.75rem 1.25rem; display: flex; flex-direction: column; gap: 0.4rem; }
+  .quiz-opt {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.15s;
+    background: none;
+    color: var(--text);
+    text-align: left;
+    font-family: 'IBM Plex Sans Thai', 'Sarabun', sans-serif;
+  }
+  .quiz-opt:hover { background: var(--surface2); border-color: var(--text-dim); }
+  .quiz-opt.correct { background: rgba(74,222,128,0.1); border-color: var(--green); color: var(--green); }
+  .quiz-opt.wrong { background: rgba(248,113,113,0.1); border-color: var(--red); color: var(--red); }
+  .quiz-explain {
+    display: none;
+    padding: 0.75rem 1.25rem;
+    font-size: 13px;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    background: var(--surface2);
+  }
+  .quiz-explain.show { display: block; }
+
+  /* SCORE */
+  .score-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    font-size: 13px;
+  }
+  .score-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  /* GLOSSARY */
+  .search-wrap { position: relative; margin-bottom: 1.5rem; }
+  .search-input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    color: var(--text);
+    font-size: 14px;
+    font-family: 'IBM Plex Sans Thai', 'Sarabun', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--text-dim); }
+  .search-icon { position: absolute; left: 0.875rem; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 14px; }
+
+  .glossary-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .glossary-item {
+    padding: 0.75rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  .glossary-term {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 150px;
+    flex-shrink: 0;
+    line-height: 1.6;
+  }
+  .glossary-def { font-size: 13px; color: var(--text); }
+
+  /* ASIA INTERACTIVE */
+  .asia-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.4rem;
+    margin: 1rem 0;
+  }
+  .asia-cell {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.6rem 0.4rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .asia-cell:hover { border-color: var(--accent); background: rgba(74,222,128,0.05); }
+  .asia-cell.selected { border-color: var(--accent); background: rgba(74,222,128,0.1); }
+  .asia-grade { font-family: 'IBM Plex Mono', monospace; font-size: 16px; font-weight: 700; color: var(--accent); }
+  .asia-label { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+  .asia-detail {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.875rem 1rem;
+    font-size: 13px;
+    display: none;
+    margin-top: 0.5rem;
+  }
+  .asia-detail.show { display: block; }
+
+  /* FAC SELECTOR */
+  .fac-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin: 1rem 0;
+  }
+  .fac-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    transition: all 0.15s;
+  }
+  .fac-item:hover { background: var(--surface2); }
+  .fac-item.selected { border-color: var(--accent); background: rgba(74,222,128,0.05); }
+  .fac-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+    width: 20px;
+    text-align: center;
+  }
+  .fac-text { font-size: 13px; flex: 1; }
+  .fac-detail {
+    display: none;
+    padding: 0.5rem 0.75rem 0.75rem 3rem;
+    font-size: 12px;
+    color: var(--text-muted);
+    border-left: 2px solid var(--border);
+    margin: 0 0.75rem 0.5rem;
+  }
+  .fac-detail.show { display: block; }
+
+  @media (max-width: 600px) {
+    .compare { grid-template-columns: 1fr; }
+    .asia-grid { grid-template-columns: repeat(3, 1fr); }
+    .evidence-name { width: 150px; }
+    .glossary-term { min-width: 110px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="header-tag">Adult Neurological Rehabilitation · สรุปความรู้พื้นฐาน</div>
+    <h1>กายภาพบำบัดระบบประสาทผู้ใหญ่</h1>
+    <div class="header-sub">สำหรับนักศึกษากายภาพบำบัด · ครอบคลุม Basic Science · Assessment · Treatment · Evidence</div>
+    <div class="tabs">
+      <button class="tab active" onclick="showSection('foundations', this)">พื้นฐาน</button>
+      <button class="tab" onclick="showSection('conditions', this)">โรคที่พบบ่อย</button>
+      <button class="tab" onclick="showSection('assessment', this)">การประเมิน</button>
+      <button class="tab" onclick="showSection('treatment', this)">การรักษา</button>
+      <button class="tab" onclick="showSection('quiz', this)">ทบทวน Q&A</button>
+      <button class="tab" onclick="showSection('glossary', this)">คำศัพท์</button>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ==================== FOUNDATIONS ==================== -->
+<div class="section active" id="foundations">
+  <div class="section-title">หลักการพื้นฐาน</div>
+  <div class="section-desc">Neuroplasticity · Motor Control · Motor Learning · ICF Framework</div>
+
+  <div class="cards">
+
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <div class="card-icon" style="background:rgba(74,222,128,0.1)">🧠</div>
+          <div>
+            <div class="card-title">Neuroplasticity — พื้นฐานของ Neuro Rehab ทั้งหมด</div>
+            <div class="card-subtitle">Use-dependent · Experience-dependent · Hebbian learning</div>
+          </div>
+        </div>
+        <div class="card-chevron">▼</div>
+      </div>
+      <div class="card-body">
+        <div class="info-block green">
+          <div class="info-label">นิยาม</div>
+          <p>ความสามารถของสมองในการ <strong>reorganize โครงสร้างและ function</strong> เพื่อตอบสนองต่อ experience, injury และ learning — ทั้งก่อนและหลังการบาดเจ็บ</p>
+        </div>
+
+        <h3>หลักการสำคัญ 10 ข้อ (Kleim & Jones, 2008)</h3>
+        <div class="pathway">
+          <div class="pathway-step"><div class="pathway-left">01</div><div class="pathway-line"><div class="pathway-dot"></div><div class="pathway-connector"></div></div><div class="pathway-content"><strong>Use it or lose it</strong> — function ที่ไม่ถูกใช้จะเสื่อมถอย</div></div>
+          <div class="pathway-step"><div class="pathway-left">02</div><div class="pathway-line"><div class="pathway-dot"></div><div class="pathway-connector"></div></div><div class="pathway-content"><strong>Use it and improve it</strong> — การฝึกทำให้ brain function ดีขึ้น</div></div>
+          <div class="pathway-step"><div class="pathway-left">03</div><div class="pathway-line"><div class="pathway-dot"></div><div class="pathway-connector"></div></div><div class="pathway-content"><strong>Specificity</strong> — nature ของ training กำหนด nature ของ plasticity</div></div>
+          <div class="pathway-step"><div class="pathway-left">04</div><div class="pathway-line"><div class="pathway-dot"></div><div class="pathway-connector"></div></div><div class="pathway-content"><strong>Repetition matters</strong> — ต้องทำซ้ำเพียงพอจึงจะ induce plasticity</div></div>
+          <div class="pathway-step"><div class="pathway-left">05</div><div class="pathway-line"><div class="pathway-dot"></div><div class="pathway-connector"></div></div><div class="pathway-content"><strong>Intensity matters</strong> — training ต้องมี intensity เพียงพอ</div></div>
+          <div class="pathway-step"><div class="pathway-left">06</div><div class="pathway-line"><div class="pathway-dot"></div><div class="pathway-connector"></div></div><div class="pathway-content"><strong>Time matters</strong> — timing ของ training สำคัญมาก</div></div>
+          <div class="pathway-step"><div class="pathway-left">07</div><div class="pathway-line"><div class="pathway-dot"></div><div class="pathway-connector"></div></div><div class="pathway-content"><strong>Salience matters</strong> — training ต้องมีความหมายต่อผู้ป่วย</div></div>
+          <div class="pathway-step"><div class="pathway-left">08</div><div class="pathway-line"><div class="pathway-dot"></div><div class="pathway-connector"></div></div><div class="pathway-content"><strong>Age matters</strong> — สมองเด็กตอบสนองต่อ plasticity ได้ดีกว่า</div></div>
+          <div class="pathway-step"><div class="pathway-left">09</div><div class="pathway-line"><div class="pathway-dot"></div><div class="pathway-connector"></div></div><div class="pathway-content"><strong>Transference</strong> — plasticity ใน function หนึ่งอาจส่งผลต่ออีก function</div></div>
+          <div class="pathway-step"><div class="pathway-left">10</div><div class="pathway-line"><div class="pathway-dot"></div><div class="pathway-connector"></div></div><div class="pathway-content"><strong>Interference</strong> — plasticity ใน function หนึ่งอาจรบกวนอีก function</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <div class="card-icon" style="background:rgba(56,189,248,0.1)">⚙️</div>
+          <div>
+            <div class="card-title">Motor Control & Motor Learning</div>
+            <div class="card-subtitle">Systems Model · Stages of learning · Feedback</div>
+          </div>
+        </div>
+        <div class="card-chevron">▼</div>
+      </div>
+      <div class="card-body">
+        <div class="compare">
+          <div class="compare-col">
+            <div class="compare-col-title">Motor Control</div>
+            <ul>
+              <li>ความสามารถในการควบคุมการเคลื่อนไหว <em>ขณะนั้น</em></li>
+              <li>CNS ประสาน input–processing–output</li>
+              <li>Systems Model: ทุก system มีส่วนร่วม</li>
+              <li>Degrees of freedom problem</li>
+            </ul>
+          </div>
+          <div class="compare-col">
+            <div class="compare-col-title" style="color:var(--accent)">Motor Learning</div>
+            <ul>
+              <li>กระบวนการได้มาซึ่งทักษะอย่าง <em>ถาวร</em></li>
+              <li>วัดจาก retention และ transfer</li>
+              <li>ไม่สามารถสังเกตได้โดยตรง</li>
+              <li>Implicit > Explicit ในเด็กและผู้ป่วย</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>Stages of Motor Learning (Fitts & Posner)</h3>
+        <table class="tbl">
+          <tr><th>ระยะ</th><th>ลักษณะ</th><th>นัยต่อ PT</th></tr>
+          <tr><td><span class="badge badge-yellow">Cognitive</span></td><td>ผู้ป่วยคิดมาก ทำผิดบ่อย ต้องการ guidance สูง</td><td>ให้ instructions ชัด ลด task complexity</td></tr>
+          <tr><td><span class="badge badge-blue">Associative</span></td><td>ทำได้สม่ำเสมอขึ้น ปรับ error เองได้</td><td>ลด feedback ลง เพิ่ม variability</td></tr>
+          <tr><td><span class="badge badge-green">Autonomous</span></td><td>ทำโดยอัตโนมัติ ไม่ต้องคิด</td><td>ฝึกใน dual-task, real environment</td></tr>
+        </table>
+
+        <div class="info-block blue">
+          <div class="info-label">Feedback — สิ่งที่ PT ต้องตัดสินใจตลอดเวลา</div>
+          <ul class="plain">
+            <li><strong>KP (Knowledge of Performance)</strong> — feedback เกี่ยวกับ movement pattern "ข้อเท้าเหยียดเกินไป"</li>
+            <li><strong>KR (Knowledge of Results)</strong> — feedback เกี่ยวกับผลลัพธ์ "เดินได้ 10 เมตร"</li>
+            <li><strong>Fading feedback</strong> — ลด frequency ลงเรื่อยๆ เมื่อ skill พัฒนา → ดีต่อ long-term retention</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <div class="card-icon" style="background:rgba(250,204,21,0.1)">📋</div>
+          <div>
+            <div class="card-title">ICF Framework — กรอบในการคิดและประเมิน</div>
+            <div class="card-subtitle">International Classification of Functioning</div>
+          </div>
+        </div>
+        <div class="card-chevron">▼</div>
+      </div>
+      <div class="card-body">
+        <table class="tbl">
+          <tr><th>Domain</th><th>ความหมาย</th><th>ตัวอย่างใน Stroke</th></tr>
+          <tr><td><span class="badge badge-red">Body Structure/Function</span></td><td>impairment ระดับร่างกาย</td><td>Hemiplegia, spasticity, aphasia</td></tr>
+          <tr><td><span class="badge badge-yellow">Activity</span></td><td>ความสามารถทำกิจกรรม</td><td>เดิน, แต่งตัว, กินอาหาร</td></tr>
+          <tr><td><span class="badge badge-green">Participation</span></td><td>การมีส่วนร่วมในสังคม</td><td>กลับทำงาน, ดูแลครอบครัว</td></tr>
+          <tr><td><span class="badge badge-blue">Environment</span></td><td>ปัจจัยภายนอก</td><td>บ้าน บันได ครอบครัว นโยบาย</td></tr>
+          <tr><td><span class="badge badge-orange">Personal</span></td><td>ปัจจัยบุคคล</td><td>อายุ เพศ motivation อาชีพ</td></tr>
+        </table>
+        <div class="info-block yellow">
+          <div class="info-label">ทำไม ICF ถึงสำคัญ</div>
+          <p>PT ที่ดีไม่รักษาแค่ impairment — ต้องตั้งเป้าหมายถึงระดับ <strong>participation</strong> ว่าผู้ป่วยจะกลับไปทำอะไรในชีวิตจริงได้</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <div class="card-icon" style="background:rgba(251,146,60,0.1)">⚡</div>
+          <div>
+            <div class="card-title">Recovery Mechanisms หลัง Brain Injury</div>
+            <div class="card-subtitle">Spontaneous recovery · Neuroplasticity · Compensation</div>
+          </div>
+        </div>
+        <div class="card-chevron">▼</div>
+      </div>
+      <div class="card-body">
+        <table class="tbl">
+          <tr><th>กลไก</th><th>ช่วงเวลา</th><th>นัยต่อ PT</th></tr>
+          <tr><td>Resolution of diaschisis</td><td>วัน–สัปดาห์แรก</td><td>เริ่ม mobilize เร็วที่สุด</td></tr>
+          <tr><td>Reduction of edema/inflammation</td><td>วันแรก–สัปดาห์</td><td>Monitor neurological status</td></tr>
+          <tr><td>Axonal sprouting</td><td>สัปดาห์–เดือน</td><td>Repetitive task training</td></tr>
+          <tr><td>Synaptic unmasking</td><td>วัน–เดือน</td><td>Task-specific practice</td></tr>
+          <tr><td>Cortical remapping</td><td>เดือน–ปี</td><td>Intensive CIMT, RAGT</td></tr>
+          <tr><td>Compensation</td><td>ตลอดเวลา</td><td>ระวัง learned non-use</td></tr>
+        </table>
+        <div class="info-block orange">
+          <div class="info-label">Learned Non-Use — ภัยเงียบ</div>
+          <p>ถ้าเราอนุญาตให้ผู้ป่วยใช้ข้างดีแทนข้างที่อ่อนแรงมากเกินไป สมองจะ "เรียนรู้" ว่าข้างนั้นใช้ไม่ได้ — ทำให้ recovery ช้าลงหรือหยุดนิ่ง</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== CONDITIONS ==================== -->
+<div class="section" id="conditions">
+  <div class="section-title">โรคและภาวะที่พบบ่อย</div>
+  <div class="section-desc">Stroke · TBI · SCI · Parkinson · MS · Guillain-Barré</div>
+
+  <div class="cards">
+
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <div class="card-icon" style="background:rgba(248,113,113,0.1)">🫀</div>
+          <div>
+            <div class="card-title">Stroke (โรคหลอดเลือดสมอง)</div>
+            <div class="card-subtitle">Ischemic · Hemorrhagic · Clinical syndromes</div>
+          </div>
+        </div>
+        <div class="card-chevron">▼</div>
+      </div>
+      <div class="card-body">
+        <div class="compare">
+          <div class="compare-col">
+            <div class="compare-col-title">Ischemic (~85%)</div>
+            <ul>
+              <li>Thrombotic — atherosclerosis</li>
+              <li>Embolic — จาก AF, valvular</li>
+              <li>Lacunar — small vessel disease</li>
+              <li>รักษาด้วย tPA ถ้าทันเวลา</li>
+            </ul>
+          </div>
+          <div class="compare-col">
+            <div class="compare-col-title">Hemorrhagic (~15%)</div>
+            <ul>
+              <li>Intracerebral — HTN บ่อยที่สุด</li>
+              <li>Subarachnoid — aneurysm rupture</li>
+              <li>Prognosis แตกต่างกัน</li>
+              <li>ระวัง rebleed ช่วงแรก</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>Clinical Syndromes ที่ PT ต้องรู้</h3>
+        <table class="tbl">
+          <tr><th>ตำแหน่ง Lesion</th><th>อาการหลัก</th></tr>
+          <tr><td>MCA (Dominant)</td><td>Hemiplegia (arm > leg), Broca's/Wernicke's aphasia, hemispatial neglect</td></tr>
+          <tr><td>MCA (Non-dominant)</td><td>Hemiplegia, hemispatial neglect, anosognosia</td></tr>
+          <tr><td>ACA</td><td>Hemiplegia (leg > arm), abulia, urinary incontinence</td></tr>
+          <tr><td>PCA</td><td>Visual field defect (homonymous hemianopia), sensory loss</td></tr>
+          <tr><td>Cerebellum</td><td>Ataxia, dysmetria, nystagmus, dysarthria</td></tr>
+          <tr><td>Brainstem</td><td>Crossed syndromes, bulbar palsy, vertigo</td></tr>
+        </table>
+
+        <div class="info-block red">
+          <div class="info-label">Pusher Syndrome — ต้องรู้จัก</div>
+          <p>ผู้ป่วยดัน (push) ตัวไปทาง hemiplegic side อย่างแข็งขัน ต่อต้านการแก้ไขท่าทาง — เกิดจาก lesion ใน posterolateral thalamus วิธีแก้: ให้ visual reference แนวตั้งฉากจากภายนอก</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <div class="card-icon" style="background:rgba(251,146,60,0.1)">💥</div>
+          <div>
+            <div class="card-title">Traumatic Brain Injury (TBI)</div>
+            <div class="card-subtitle">Severity classification · Rancho Levels · Diffuse Axonal Injury</div>
+          </div>
+        </div>
+        <div class="card-chevron">▼</div>
+      </div>
+      <div class="card-body">
+        <table class="tbl">
+          <tr><th>Severity</th><th>GCS</th><th>LOC</th><th>PTA</th></tr>
+          <tr><td><span class="badge badge-green">Mild</span></td><td>13–15</td><td>&lt; 30 นาที</td><td>&lt; 1 วัน</td></tr>
+          <tr><td><span class="badge badge-yellow">Moderate</span></td><td>9–12</td><td>30 นาที – 24 ชั่วโมง</td><td>1–7 วัน</td></tr>
+          <tr><td><span class="badge badge-red">Severe</span></td><td>≤ 8</td><td>&gt; 24 ชั่วโมง</td><td>&gt; 7 วัน</td></tr>
+        </table>
+
+        <h3>Rancho Los Amigos Scale (Cognitive Recovery)</h3>
+        <table class="tbl">
+          <tr><th>Level</th><th>ลักษณะ</th><th>PT Approach</th></tr>
+          <tr><td>I–II</td><td>No/generalized response</td><td>Sensory stimulation, positioning</td></tr>
+          <tr><td>III</td><td>Localized response</td><td>Simple commands, PROM</td></tr>
+          <tr><td>IV</td><td>Confused-agitated</td><td>สิ่งเร้าน้อย ปลอดภัย กิจกรรมง่าย</td></tr>
+          <tr><td>V–VI</td><td>Confused-inappropriate/appropriate</td><td>Structured activities, errorless learning</td></tr>
+          <tr><td>VII–VIII</td><td>Automatic/purposeful</td><td>Community re-entry, dual-task</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <div class="card-icon" style="background:rgba(56,189,248,0.1)">🦴</div>
+          <div>
+            <div class="card-title">Spinal Cord Injury (SCI)</div>
+            <div class="card-subtitle">ASIA Classification · Complete vs Incomplete · Syndromes</div>
+          </div>
+        </div>
+        <div class="card-chevron">▼</div>
+      </div>
+      <div class="card-body">
+
+        <h3>ASIA Impairment Scale — คลิกเพื่อดูรายละเอียด</h3>
+        <div class="asia-grid">
+          <div class="asia-cell" onclick="showAsia('A')"><div class="asia-grade">A</div><div class="asia-label">Complete</div></div>
+          <div class="asia-cell" onclick="showAsia('B')"><div class="asia-grade">B</div><div class="asia-label">Sensory only</div></div>
+          <div class="asia-cell" onclick="showAsia('C')"><div class="asia-grade">C</div><div class="asia-label">Motor &lt;3</div></div>
+          <div class="asia-cell" onclick="showAsia('D')"><div class="asia-grade">D</div><div class="asia-label">Motor ≥3</div></div>
+          <div class="asia-cell" onclick="showAsia('E')"><div class="asia-grade">E</div><div class="asia-label">Normal</div></div>
+        </div>
+        <div class="asia-detail" id="asia-detail"></div>
+
+        <h3>Incomplete SCI Syndromes</h3>
+        <table class="tbl">
+          <tr><th>Syndrome</th><th>Lesion</th><th>อาการ</th></tr>
+          <tr><td>Central cord</td><td>Central gray matter</td><td>UE > LE weakness, bladder dysfunction. พบมากสุดในผู้สูงอายุ (cervical hyperextension)</td></tr>
+          <tr><td>Brown-Séquard</td><td>Hemicord</td><td>Ipsilateral: motor + proprioception ↓ / Contralateral: pain + temp ↓</td></tr>
+          <tr><td>Anterior cord</td><td>Anterior 2/3</td><td>Motor + pain/temp ↓ ทั้งสองข้าง แต่ proprioception ปกติ. Prognosis แย่สุด</td></tr>
+          <tr><td>Posterior cord</td><td>Dorsal columns</td><td>Proprioception + vibration ↓ Motor ปกติ. พบน้อยมาก</td></tr>
+          <tr><td>Cauda equina</td><td>Nerve roots L2↓</td><td>LMN signs, saddle anesthesia, bowel/bladder dysfunction</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <div class="card-icon" style="background:rgba(250,204,21,0.1)">🔄</div>
+          <div>
+            <div class="card-title">Parkinson's Disease</div>
+            <div class="card-subtitle">Basal ganglia dysfunction · Hoehn & Yahr · LSVT BIG</div>
+          </div>
+        </div>
+        <div class="card-chevron">▼</div>
+      </div>
+      <div class="card-body">
+        <div class="info-block yellow">
+          <div class="info-label">Cardinal Features — TRAP</div>
+          <ul class="plain">
+            <li><strong>T</strong>remor — resting tremor "pill-rolling" 4–6 Hz</li>
+            <li><strong>R</strong>igidity — lead-pipe / cogwheel</li>
+            <li><strong>A</strong>kinesia/Bradykinesia — ช้า เริ่มยาก</li>
+            <li><strong>P</strong>ostural instability — ล้มง่าย ปฏิกิริยา righting ช้า</li>
+          </ul>
+        </div>
+
+        <h3>Hoehn & Yahr Scale</h3>
+        <table class="tbl">
+          <tr><th>Stage</th><th>ลักษณะ</th></tr>
+          <tr><td>1</td><td>Unilateral involvement เท่านั้น</td></tr>
+          <tr><td>2</td><td>Bilateral involvement ไม่มี balance impairment</td></tr>
+          <tr><td>3</td><td>Mild–moderate bilateral + postural instability แต่ยังอิสระ</td></tr>
+          <tr><td>4</td><td>ต้องการความช่วยเหลือบางส่วน</td></tr>
+          <tr><td>5</td><td>ต้องใช้ wheelchair หรือนอนติดเตียง</td></tr>
+        </table>
+
+        <div class="info-block green">
+          <div class="info-label">LSVT BIG — Evidence-Based PT สำหรับ PD</div>
+          <p>ดัดแปลงจาก LSVT LOUD (speech therapy) — เน้น <strong>amplitude ขนาดใหญ่</strong> ทุก movement เพราะ PD มี perceptual deficit (คิดว่าตัวเองเคลื่อนไหว "ปกติ" ทั้งที่เล็กมาก)</p>
+          <p style="margin-top:0.3rem;color:var(--text-muted)">Protocol: 16 sessions ใน 4 สัปดาห์ + home exercise program</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <div class="card-icon" style="background:rgba(74,222,128,0.1)">🔬</div>
+          <div>
+            <div class="card-title">Multiple Sclerosis (MS)</div>
+            <div class="card-subtitle">Demyelination · Relapsing-remitting · Fatigue management</div>
+          </div>
+        </div>
+        <div class="card-chevron">▼</div>
+      </div>
+      <div class="card-body">
+        <table class="tbl">
+          <tr><th>Course</th><th>ลักษณะ</th><th>พบบ่อย</th></tr>
+          <tr><td>RRMS</td><td>Relapse แล้ว remit ได้บางส่วน</td><td>~85% ช่วงแรก</td></tr>
+          <tr><td>SPMS</td><td>เริ่มจาก RRMS แล้วค่อยๆ แย่ลง</td><td>—</td></tr>
+          <tr><td>PPMS</td><td>Progressive ตั้งแต่ต้น ไม่มี relapse</td><td>~15%</td></tr>
+        </table>
+
+        <div class="info-block green">
+          <div class="info-label">Uhthoff's Phenomenon — ต้องรู้!</div>
+          <p>อาการแย่ลงชั่วคราวเมื่ออุณหภูมิร่างกายสูงขึ้น (ออกกำลังกาย อาบน้ำอุ่น อากาศร้อน) — <strong>ไม่ใช่ relapse จริง</strong> อาการจะดีขึ้นเมื่อเย็นลง</p>
+        </div>
+
+        <h3>หลักการ PT ใน MS</h3>
+        <ul class="plain">
+          <li><strong>Fatigue management</strong> — Energy conservation, Pacing สำคัญมาก</li>
+          <li><strong>Exercise ได้</strong> — ไม่ต้องกลัว แต่ monitor temperature</li>
+          <li><strong>Balance training</strong> — cerebellar involvement พบบ่อย</li>
+          <li><strong>Borg RPE</strong> ≤ 14 เป็น guideline ระหว่างออกกำลัง</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <div class="card-icon" style="background:rgba(56,189,248,0.1)">⚡</div>
+          <div>
+            <div class="card-title">Guillain-Barré Syndrome (GBS)</div>
+            <div class="card-subtitle">Ascending paralysis · AIDP · Recovery phases</div>
+          </div>
+        </div>
+        <div class="card-chevron">▼</div>
+      </div>
+      <div class="card-body">
+        <div class="info-block blue">
+          <div class="info-label">พยาธิสภาพ</div>
+          <p>Autoimmune demyelination ของ peripheral nerves — ascending flaccid paralysis มักเริ่มจากขา AIDP (Acute Inflammatory Demyelinating Polyneuropathy) พบบ่อยที่สุด</p>
+        </div>
+
+        <table class="tbl">
+          <tr><th>Phase</th><th>ระยะเวลา</th><th>PT Goal</th></tr>
+          <tr><td>Progressive</td><td>ไม่กี่วัน – 4 สัปดาห์</td><td>Prevent complications, positioning, monitor respiratory</td></tr>
+          <tr><td>Plateau</td><td>วัน – เดือน</td><td>Prevent deconditioning, PROM, splinting</td></tr>
+          <tr><td>Recovery</td><td>เดือน – ปี</td><td>Progressive strengthening, gait training, fatigue management</td></tr>
+        </table>
+
+        <div class="info-block orange">
+          <div class="info-label">⚠️ ระวัง Autonomic Dysfunction</div>
+          <p>Heart rate และ BP อาจ fluctuate รุนแรง — monitor vital signs ก่อน ระหว่าง และหลัง exercise เสมอในระยะ progressive และ plateau</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== ASSESSMENT ==================== -->
+<div class="section" id="assessment">
+  <div class="section-title">เครื่องมือประเมิน</div>
+  <div class="section-desc">จัดตาม ICF · Impairment · Activity · Participation</div>
+
+  <div class="cards">
+
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <div class="card-icon" style="background:rgba(74,222,128,0.1)">🧮</div>
+          <div>
+            <div class="card-title">Motor Function & Stroke Scales</div>
+            <div class="card-subtitle">Fugl-Meyer · Brunnstrom · MAS · NIHSS</div>
+          </div>
+        </div>
+        <div class="card-chevron">▼</div>
+      </div>
+      <div class="card-body">
+        <table class="tbl">
+          <tr><th>Tool</th><th>วัดอะไร</th><th>Range</th><th>เหมาะกับ</th></tr>
+          <tr><td><strong>Fugl-Meyer Assessment (FMA)</strong></td><td>Motor recovery ใน stroke</td><td>0–226 (UE: 0–66, LE: 0–34)</td><td>Gold standard motor assessment stroke</td></tr>
+          <tr><td><strong>Brunnstrom Stages</strong></td><td>Stage of recovery (1–6)</td><td>Stage 1–6</td><td>Clinical tracking ง่าย</td></tr>
+          <tr><td><strong>Modified Ashworth Scale</strong></td><td>Spasticity</td><td>0, 1, 1+, 2, 3, 4</td><td>Spasticity assessment</td></tr>
+          <tr><td><strong>NIHSS</strong></td><td>Stroke severity (acute)</td><td>0–42</td><td>Acute phase, prognosis</td></tr>
+        </table>
+
+        <h3>Brunnstrom Stages — คลิกเพื่อดูรายละเอียด</h3>
+        <div class="scale-selector" id="brunnstrom-sel">
+          <button class="scale-btn" onclick="showScale('brunnstrom', 1, this)">Stage 1</button>
+          <button class="scale-btn" onclick="showScale('brunnstrom', 2, this)">Stage 2</button>
+          <button class="scale-btn" onclick="showScale('brunnstrom', 3, this)">Stage 3</button>
+          <button class="scale-btn" onclick="showScale('brunnstrom', 4, this)">Stage 4</button>
+          <button class="scale-btn" onclick="showScale('brunnstrom', 5, this)">Stage 5</button>
+          <button class="scale-btn" onclick="showScale('brunnstrom', 6, this)">Stage 6</button>
+        </div>
+        <div class="scale-detail" id="brunnstrom-detail"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <div class="card-icon" style="background:rgba(56,189,248,0.1)">⚖️</div>
+          <div>
+            <div class="card-title">Balance & Gait</div>
+            <div class="card-subtitle">Berg · TUG · FAC · 10MWT · 6MWT</div>
+          </div>
+        </div>
+        <div class="card-chevron">▼</div>
+      </div>
+      <div class="card-body">
+        <table class="tbl">
+          <tr><th>Tool</th><th>วัดอะไร</th><th>MCID</th><th>หมายเหตุ</th></tr>
+          <tr><td><strong>Berg Balance Scale</strong></td><td>Static + dynamic balance</td><td>4–7 คะแนน</td><td>&lt;45 = fall risk สูง</td></tr>
+          <tr><td><strong>TUG</strong></td><td>Functional mobility</td><td>~3.5 วิ (stroke)</td><td>&gt;12 วิ = fall risk</td></tr>
+          <tr><td><strong>10MWT</strong></td><td>Gait speed</td><td>0.1 m/s</td><td>&lt;0.4 = household ambulator</td></tr>
+          <tr><td><strong>6MWT</strong></td><td>Walking endurance</td><td>~50 เมตร</td><td>Cardiorespiratory fitness</td></tr>
+          <tr><td><strong>DGI</strong></td><td>Gait under varying conditions</td><td>—</td><td>&lt;19/24 = fall risk</td></tr>
+        </table>
+
+        <h3>FAC (Functional Ambulation Category) — คลิกเพื่อดูรายละเอียด</h3>
+        <div class="fac-bar" id="fac-bars">
+          <div class="fac-item" onclick="toggleFac(this, 0)"><div class="fac-num">0</div><div class="fac-text">Non-functional ambulation</div></div>
+          <div class="fac-detail" id="fac-0">เดินไม่ได้ หรือต้องการความช่วยเหลือจากคน ≥ 2 คน</div>
+          <div class="fac-item" onclick="toggleFac(this, 1)"><div class="fac-num">1</div><div class="fac-text">Dependent — level surfaces, continuous assist</div></div>
+          <div class="fac-detail" id="fac-1">ต้องการ physical assist ตลอดเวลาเพื่อรักษาสมดุลหรือช่วยรับน้ำหนัก บน level surface เท่านั้น</div>
+          <div class="fac-item" onclick="toggleFac(this, 2)"><div class="fac-num">2</div><div class="fac-text">Dependent — continuous supervision</div></div>
+          <div class="fac-detail" id="fac-2">ต้องการ supervision ต่อเนื่องหรือ verbal cueing เพื่อความปลอดภัย บน level surface</div>
+          <div class="fac-item" onclick="toggleFac(this, 3)"><div class="fac-num">3</div><div class="fac-text">Dependent — supervision only</div></div>
+          <div class="fac-detail" id="fac-3">ต้องการ supervision เฉพาะเวลา stairs, ramps หรือพื้นผิวไม่เรียบ บน level surface เดินได้เองปลอดภัย</div>
+          <div class="fac-item" onclick="toggleFac(this, 4)"><div class="fac-num">4</div><div class="fac-text">Independent — level surfaces only</div></div>
+          <div class="fac-detail" id="fac-4">เดินบน level surface ได้อิสระ แต่ยังต้องการ assist บน stairs, ramps หรือพื้นผิวไม่เรียบ</div>
+          <div class="fac-item" onclick="toggleFac(this, 5)"><div class="fac-num">5</div><div class="fac-text">Independent — all surfaces</div></div>
+          <div class="fac-detail" id="fac-5">เดินได้อิสระทุกพื้นผิว รวมถึง stairs, ramps, ทางลาด ปลอดภัยโดยไม่ต้องการ supervision</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <div class="card-icon" style="background:rgba(250,204,21,0.1)">🏃</div>
+          <div>
+            <div class="card-title">Activity & Participation</div>
+            <div class="card-subtitle">FIM · mRS · Barthel Index · SIS</div>
+          </div>
+        </div>
+        <div class="card-chevron">▼</div>
+      </div>
+      <div class="card-body">
+        <table class="tbl">
+          <tr><th>Tool</th><th>Domain</th><th>Range</th><th>Cut-off สำคัญ</th></tr>
+          <tr><td><strong>FIM</strong></td><td>Self-care, Mobility, Cognition</td><td>18–126</td><td>18 = total assist, 126 = independent</td></tr>
+          <tr><td><strong>Barthel Index</strong></td><td>ADL, Mobility</td><td>0–100</td><td>&lt;60 = need substantial assist</td></tr>
+          <tr><td><strong>mRS (modified Rankin Scale)</strong></td><td>Global disability</td><td>0–6</td><td>≤2 = favorable outcome</td></tr>
+          <tr><td><strong>SIS (Stroke Impact Scale)</strong></td><td>QoL post-stroke</td><td>0–100 ต่อ domain</td><td>Patient-reported outcome</td></tr>
+        </table>
+
+        <div class="info-block yellow">
+          <div class="info-label">FIM vs Barthel — ต่างกันอย่างไร</div>
+          <p>FIM วัด <strong>cognitive function</strong> ด้วย (communication, social cognition) และมี 7 levels แทนที่จะเป็น binary — ทำให้ sensitive กว่าในการ detect change</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <div class="card-icon" style="background:rgba(251,146,60,0.1)">🧪</div>
+          <div>
+            <div class="card-title">Cognitive & Perceptual</div>
+            <div class="card-subtitle">MoCA · MMSE · Neglect tests · Clock drawing</div>
+          </div>
+        </div>
+        <div class="card-chevron">▼</div>
+      </div>
+      <div class="card-body">
+        <table class="tbl">
+          <tr><th>Tool</th><th>วัดอะไร</th><th>Cut-off</th></tr>
+          <tr><td><strong>MoCA</strong></td><td>Cognitive screening แบบ sensitive</td><td>&lt;26 = possible impairment</td></tr>
+          <tr><td><strong>MMSE</strong></td><td>Cognitive screening แบบ classic</td><td>&lt;24 = possible dementia</td></tr>
+          <tr><td><strong>Line Bisection Test</strong></td><td>Unilateral spatial neglect</td><td>Deviation &gt;6mm = neglect</td></tr>
+          <tr><td><strong>Star Cancellation</strong></td><td>Hemispatial neglect</td><td>Asymmetric errors</td></tr>
+          <tr><td><strong>Clock Drawing</strong></td><td>Visuospatial + executive</td><td>Qualitative</td></tr>
+        </table>
+
+        <div class="info-block orange">
+          <div class="info-label">MoCA ดีกว่า MMSE อย่างไร</div>
+          <p>MoCA ไว (sensitive) ต่อ <strong>Mild Cognitive Impairment (MCI)</strong> และ executive function ได้ดีกว่ามาก MMSE มักพลาด cognitive impairment ระดับเบาหลัง stroke</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== TREATMENT ==================== -->
+<div class="section" id="treatment">
+  <div class="section-title">แนวทางการรักษา</div>
+  <div class="section-desc">Task-oriented · CIMT · RAGT · Mirror Therapy · NMES · Early Mobilization</div>
+
+  <div class="cards">
+
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <div class="card-icon" style="background:rgba(74,222,128,0.1)">🏋️</div>
+          <div>
+            <div class="card-title">Task-Oriented Training</div>
+            <div class="card-subtitle">Evidence สูงสุด · Repetitive practice · Real-world tasks</div>
+          </div>
+        </div>
+        <div class="card-chevron">▼</div>
+      </div>
+      <div class="card-body">
+        <div class="info-block green">
+          <div class="info-label">หลักการ</div>
+          <p>ฝึก <strong>functional task ที่มีความหมาย</strong> โดยตรง ด้วย repetition สูง ใน context ที่ใกล้เคียงชีวิตจริง — อิง specificity principle ของ neuroplasticity</p>
+        </div>
+        <ul class="plain">
+          <li><strong>Whole task practice</strong> ดีกว่า part practice สำหรับ continuous tasks</li>
+          <li><strong>Variable practice</strong> ดีกว่า blocked practice สำหรับ long-term retention</li>
+          <li><strong>Random practice order</strong> เหนื่อยกว่าแต่ remember ได้ดีกว่า</li>
+          <li><strong>Mental practice</strong> เสริม physical practice ได้ โดยเฉพาะ UE ใน stroke</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <div class="card-icon" style="background:rgba(251,146,60,0.1)">💪</div>
+          <div>
+            <div class="card-title">CIMT (Constraint-Induced Movement Therapy)</div>
+            <div class="card-subtitle">UE Stroke · Forced use · Cortical remapping</div>
+          </div>
+        </div>
+        <div class="card-chevron">▼</div>
+      </div>
+      <div class="card-body">
+        <div class="info-block orange">
+          <div class="info-label">Eligibility Criteria (Classic CIMT)</div>
+          <ul class="plain">
+            <li>Wrist extension ≥ 20° จาก neutral</li>
+            <li>Finger extension ≥ 10°</li>
+            <li>Cognitive ดีพอทำตาม instruction ได้</li>
+          </ul>
+        </div>
+
+        <div class="compare">
+          <div class="compare-col">
+            <div class="compare-col-title">Classic CIMT</div>
+            <ul>
+              <li>Constrain 90% waking hours</li>
+              <li>6 ชั่วโมง/วัน structured practice</li>
+              <li>2 สัปดาห์</li>
+              <li>Intensive — compliance ยาก</li>
+            </ul>
+          </div>
+          <div class="compare-col">
+            <div class="compare-col-title" style="color:var(--accent)">Modified CIMT</div>
+            <ul>
+              <li>Constrain น้อยกว่า</li>
+              <li>3 ชั่วโมง/วัน</li>
+              <li>10 สัปดาห์</li>
+              <li>Feasible มากกว่า</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <div class="card-icon" style="background:rgba(56,189,248,0.1)">🤖</div>
+          <div>
+            <div class="card-title">Robotic-Assisted Gait Training (RAGT)</div>
+            <div class="card-subtitle">EksoNR · HIWIN · Lokomat · R-GAIT</div>
+          </div>
+        </div>
+        <div class="card-chevron">▼</div>
+      </div>
+      <div class="card-body">
+        <table class="tbl">
+          <tr><th>อุปกรณ์</th><th>ประเภท</th><th>กลไก</th><th>เหมาะกับ</th></tr>
+          <tr><td>EksoNR</td><td>Exoskeleton</td><td>Overground walking, variable assist</td><td>SCI, Stroke, TBI</td></tr>
+          <tr><td>HIWIN</td><td>End-effector</td><td>Footplate-driven, กระตุ้น foot trajectory</td><td>Stroke, early SCI</td></tr>
+          <tr><td>Lokomat</td><td>Exoskeleton + treadmill</td><td>BWS + robotic leg guidance</td><td>SCI, Stroke</td></tr>
+          <tr><td>R-GAIT</td><td>Treadmill + BWS</td><td>Manual/assisted treadmill walking</td><td>SCI, Stroke</td></tr>
+        </table>
+
+        <div class="info-block blue">
+          <div class="info-label">Evidence ปัจจุบัน</div>
+          <p>RAGT เทียบกับ conventional gait training: improvement ใน <strong>walking speed และ independence</strong> ใน SCI incomplete และ sub-acute stroke — แต่ยังต้องการ high-quality RCT เพิ่มเติม</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <div class="card-icon" style="background:rgba(250,204,21,0.1)">🪞</div>
+          <div>
+            <div class="card-title">Mirror Therapy · Mental Practice · VR</div>
+            <div class="card-subtitle">Neural activation without movement</div>
+          </div>
+        </div>
+        <div class="card-chevron">▼</div>
+      </div>
+      <div class="card-body">
+        <div class="compare">
+          <div class="compare-col">
+            <div class="compare-col-title">Mirror Therapy</div>
+            <ul>
+              <li>กระจกสะท้อนมือข้างดี</li>
+              <li>สมองตีความว่ามือข้างอ่อนเคลื่อนไหว</li>
+              <li>Evidence ดีใน UE stroke</li>
+              <li>ใช้ได้ใน complete SCI (pain)</li>
+            </ul>
+          </div>
+          <div class="compare-col">
+            <div class="compare-col-title">Virtual Reality (VR)</div>
+            <ul>
+              <li>Immersive task practice</li>
+              <li>Augmented feedback</li>
+              <li>High engagement/motivation</li>
+              <li>Evidence เพิ่มขึ้นเรื่อยๆ</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="info-block yellow">
+          <div class="info-label">Mental Practice (Motor Imagery)</div>
+          <p>จินตนาการว่าตัวเองทำ movement โดยไม่เคลื่อนไหวจริง — activate motor cortex ได้ประมาณ 70% ของ physical practice ใช้เสริมเมื่อ fatigue สูงหรือ movement ยังทำไม่ได้</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <div class="card-icon" style="background:rgba(248,113,113,0.1)">⚡</div>
+          <div>
+            <div class="card-title">Electrical Stimulation</div>
+            <div class="card-subtitle">NMES · FES · TENS · rTMS · tDCS</div>
+          </div>
+        </div>
+        <div class="card-chevron">▼</div>
+      </div>
+      <div class="card-body">
+        <table class="tbl">
+          <tr><th>Modality</th><th>กลไก</th><th>ใช้กับ</th><th>Evidence</th></tr>
+          <tr><td>NMES</td><td>กระตุ้นกล้ามเนื้อ/nerve โดยตรง</td><td>Shoulder subluxation, UE weakness</td><td>ปานกลาง–ดี</td></tr>
+          <tr><td>FES</td><td>NMES ขณะทำ functional task</td><td>Foot drop, hand grasp</td><td>ดี</td></tr>
+          <tr><td>TENS</td><td>Sensory stimulation, pain modulation</td><td>Pain, spasticity</td><td>ปานกลาง</td></tr>
+          <tr><td>rTMS</td><td>Non-invasive brain stimulation</td><td>Motor recovery, depression post-stroke</td><td>ปานกลาง–ดี</td></tr>
+          <tr><td>tDCS</td><td>Modulate cortical excitability</td><td>เสริม motor training</td><td>เพิ่มขึ้น</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <div class="card-icon" style="background:rgba(74,222,128,0.1)">🏥</div>
+          <div>
+            <div class="card-title">Early Mobilization</div>
+            <div class="card-subtitle">AVERT Trial · ICU Rehab · Sitting out of bed</div>
+          </div>
+        </div>
+        <div class="card-chevron">▼</div>
+      </div>
+      <div class="card-body">
+        <div class="info-block green">
+          <div class="info-label">หลักการ</div>
+          <p>เริ่ม mobilize <strong>เร็วที่สุดที่ปลอดภัย</strong> — ลด complications (pneumonia, DVT, deconditioning, pressure ulcers) และใช้ประโยชน์จาก early plasticity window</p>
+        </div>
+
+        <div class="info-block red">
+          <div class="info-label">⚠️ AVERT Trial — บทเรียนสำคัญ</div>
+          <p>Very early mobilization (&lt;24 ชั่วโมง, high dose) ใน acute stroke — <strong>outcome แย่กว่า</strong> usual care ในกลุ่ม very early high-dose</p>
+          <p style="margin-top:0.3rem;color:var(--text-muted)">→ Early mobilization ดี แต่ <strong>"very early very intensive"</strong> อาจเป็นอันตราย — ต้องดู clinical stability ก่อนเสมอ</p>
+        </div>
+
+        <h3>Contraindications ชั่วคราว</h3>
+        <ul class="plain">
+          <li>HR &gt; 120 bpm หรือ &lt; 40 bpm ขณะพัก</li>
+          <li>SpO₂ &lt; 88% ขณะพัก</li>
+          <li>Systolic BP &gt; 180 หรือ &lt; 90 mmHg</li>
+          <li>Active ischemia หรือ arrhythmia ที่ไม่ได้ควบคุม</li>
+          <li>Agitation รุนแรงที่เป็นอันตราย</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <h3 style="margin-top:2rem">Evidence Summary — Adult Neuro PT</h3>
+  <div class="evidence-list">
+    <div class="evidence-item"><div class="evidence-name">Task-oriented training</div><div class="evidence-bar-wrap"><div class="evidence-bar" style="width:92%;background:var(--green)"></div></div><div class="evidence-label">สูงมาก</div></div>
+    <div class="evidence-item"><div class="evidence-name">CIMT (UE stroke)</div><div class="evidence-bar-wrap"><div class="evidence-bar" style="width:88%;background:var(--green)"></div></div><div class="evidence-label">สูง</div></div>
+    <div class="evidence-item"><div class="evidence-name">FES (Foot drop)</div><div class="evidence-bar-wrap"><div class="evidence-bar" style="width:78%;background:var(--accent)"></div></div><div class="evidence-label">ปานกลาง–สูง</div></div>
+    <div class="evidence-item"><div class="evidence-name">RAGT (Stroke/SCI)</div><div class="evidence-bar-wrap"><div class="evidence-bar" style="width:72%;background:var(--accent)"></div></div><div class="evidence-label">ปานกลาง–สูง</div></div>
+    <div class="evidence-item"><div class="evidence-name">Mirror Therapy</div><div class="evidence-bar-wrap"><div class="evidence-bar" style="width:68%;background:var(--accent)"></div></div><div class="evidence-label">ปานกลาง</div></div>
+    <div class="evidence-item"><div class="evidence-name">LSVT BIG (Parkinson)</div><div class="evidence-bar-wrap"><div class="evidence-bar" style="width:75%;background:var(--accent)"></div></div><div class="evidence-label">ปานกลาง–สูง</div></div>
+    <div class="evidence-item"><div class="evidence-name">rTMS เสริม PT</div><div class="evidence-bar-wrap"><div class="evidence-bar" style="width:60%;background:var(--yellow)"></div></div><div class="evidence-label">ปานกลาง</div></div>
+    <div class="evidence-item"><div class="evidence-name">TENS (Spasticity)</div><div class="evidence-bar-wrap"><div class="evidence-bar" style="width:45%;background:var(--yellow)"></div></div><div class="evidence-label">ต่ำ–ปานกลาง</div></div>
+  </div>
+</div>
+
+<!-- ==================== QUIZ ==================== -->
+<div class="section" id="quiz">
+  <div class="section-title">ทบทวนความรู้</div>
+  <div class="section-desc">คลิกคำตอบที่คิดว่าถูก · จะแสดงคำอธิบายทันที</div>
+
+  <div class="score-bar">
+    <div class="score-num" id="score-display">0/0</div>
+    <div style="flex:1">
+      <div style="font-size:13px;font-weight:600;margin-bottom:2px">คะแนน</div>
+      <div style="font-size:12px;color:var(--text-muted)" id="score-desc">เริ่มตอบคำถามเพื่อดูคะแนน</div>
+    </div>
+    <button onclick="resetQuiz()" style="padding:0.4rem 0.75rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text-muted);cursor:pointer;font-size:12px;font-family:'IBM Plex Sans Thai',sans-serif">รีเซ็ต</button>
+  </div>
+
+  <div class="quiz-container" id="quiz-container"></div>
+</div>
+
+<!-- ==================== GLOSSARY ==================== -->
+<div class="section" id="glossary">
+  <div class="section-title">คำศัพท์เทคนิค</div>
+  <div class="section-desc">ค้นหาคำศัพท์ภาษาอังกฤษพร้อมคำอธิบายภาษาไทย</div>
+
+  <div class="search-wrap">
+    <div class="search-icon">🔍</div>
+    <input class="search-input" type="text" placeholder="พิมพ์คำค้นหา เช่น neuroplasticity, CIMT, spasticity..." oninput="searchGlossary(this.value)">
+  </div>
+  <div class="glossary-list" id="glossary-list"></div>
+</div>
+
+</div>
+
+<script>
+// SECTION SWITCH
+function showSection(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// CARD TOGGLE
+function toggleCard(header) {
+  header.parentElement.classList.toggle('open');
+}
+
+// BRUNNSTROM
+const brunnstrom = {
+  1: { title: 'Stage 1 — Flaccidity', desc: 'ไม่มี movement ไม่มี reflex ใน affected extremity — สมองยังไม่ recover การควบคุมเลย' },
+  2: { title: 'Stage 2 — Spasticity appears + Synergy begins', desc: 'Spasticity เริ่มปรากฏ เริ่มมี synergy movement แต่ยังควบคุมไม่ได้ voluntary' },
+  3: { title: 'Stage 3 — Synergy peak', desc: 'Spasticity สูงสุด Voluntary movement ได้แต่ถูก synergy ครอบงำทั้งหมด (flexion synergy UE, extension synergy LE)' },
+  4: { title: 'Stage 4 — Synergy breaking', desc: 'เริ่มเคลื่อนไหวนอก synergy ได้บ้าง เช่น Hand-to-mouth, Knee flexion นอก synergy Spasticity ลดลง' },
+  5: { title: 'Stage 5 — Independence from synergy', desc: 'เคลื่อนไหวนอก synergy ได้มากขึ้น Spasticity ลดต่อลง Fine motor เริ่มกลับมา' },
+  6: { title: 'Stage 6 — Near normal', desc: 'Movement ใกล้ปกติ Spasticity หายหรือน้อยมาก Coordination และ speed ใกล้เคียง normal ยังอาจมีความแตกต่างจาก normal อยู่บ้าง' },
+};
+
+function showScale(type, val, btn) {
+  const sel = document.getElementById(type + '-sel');
+  sel.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const detail = document.getElementById(type + '-detail');
+  const data = brunnstrom[val];
+  detail.innerHTML = `<div class="scale-detail-title">${data.title}</div><p>${data.desc}</p>`;
+  detail.classList.add('show');
+}
+
+// ASIA
+const asiaData = {
+  A: { title: 'Grade A — Complete', desc: 'ไม่มี motor และ sensory function ใน sacral segments S4–S5 เลย — Complete injury' },
+  B: { title: 'Grade B — Sensory Incomplete', desc: 'มี sensory แต่ไม่มี motor function ต่ำกว่าระดับ injury ลงมา รวม S4–S5' },
+  C: { title: 'Grade C — Motor Incomplete', desc: 'มี motor function ต่ำกว่าระดับ injury แต่ key muscles ส่วนใหญ่มีกำลัง < 3 (ต้องการแรงโน้มถ่วง)' },
+  D: { title: 'Grade D — Motor Incomplete', desc: 'มี motor function ต่ำกว่าระดับ injury และ key muscles ส่วนใหญ่มีกำลัง ≥ 3 — Prognosis ดีที่สุด' },
+  E: { title: 'Grade E — Normal', desc: 'Motor และ sensory function ปกติในทุก segment — อาจยังมี reflex abnormality บ้าง' },
+};
+
+function showAsia(grade) {
+  document.querySelectorAll('.asia-cell').forEach(c => c.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  const d = asiaData[grade];
+  const detail = document.getElementById('asia-detail');
+  detail.innerHTML = `<div style="font-weight:700;color:var(--accent);margin-bottom:0.3rem">${d.title}</div><p>${d.desc}</p>`;
+  detail.classList.add('show');
+}
+
+// FAC
+function toggleFac(item, num) {
+  const detail = document.getElementById('fac-' + num);
+  const isOpen = detail.classList.contains('show');
+  document.querySelectorAll('[id^="fac-"]').forEach(d => d.classList.remove('show'));
+  document.querySelectorAll('#fac-bars .fac-item').forEach(i => i.classList.remove('selected'));
+  if (!isOpen) {
+    detail.classList.add('show');
+    item.classList.add('selected');
+  }
+}
+
+// QUIZ
+const quizData = [
+  {
+    q: "Neuroplasticity principle ข้อใดอธิบายว่าทำไม task-specific practice จึงสำคัญ?",
+    opts: ["Age matters", "Specificity — nature of training กำหนด nature of plasticity", "Transference", "Interference"],
+    ans: 1,
+    explain: "Specificity principle หมายความว่า brain reorganization จะเกิดขึ้นตรงกับ function ที่ถูกฝึก — ฝึก gait จะ reorganize gait-related circuits, ฝึก reaching จะ reorganize reaching circuits"
+  },
+  {
+    q: "Brunnstrom Stage 3 มีลักษณะสำคัญอะไร?",
+    opts: ["Flaccid paralysis ทั้งหมด", "Spasticity สูงสุด + Voluntary movement ถูก synergy ครอบงำ", "เริ่มเคลื่อนไหวนอก synergy ได้บ้าง", "Movement ใกล้ปกติ"],
+    ans: 1,
+    explain: "Stage 3 คือจุดที่ spasticity พีคและ voluntary movement มีแต่ synergy pattern — Flexion synergy ใน UE (shoulder abduction, elbow flexion) และ Extension synergy ใน LE (hip extension, knee extension, ankle plantarflexion)"
+  },
+  {
+    q: "MCA stroke ด้าน dominant hemisphere มักมีอาการอะไรที่โดดเด่นที่สุด?",
+    opts: ["Visual field defect", "Aphasia + Hemiplegia (arm > leg)", "Cerebellar ataxia", "Crossed syndrome"],
+    ans: 1,
+    explain: "MCA dominant hemisphere ควบคุม Broca's area (frontal) และ Wernicke's area (temporal) ทำให้เกิด aphasia ร่วมกับ hemiplegia ที่ UE มักรุนแรงกว่า LE เพราะ MCA perfuse arm area มากกว่า"
+  },
+  {
+    q: "ASIA Grade D หมายความว่าอะไร?",
+    opts: ["ไม่มี motor และ sensory เลย", "มีแค่ sensory ต่ำกว่า level", "Motor function มี แต่ส่วนใหญ่ < grade 3", "Motor function มี และส่วนใหญ่ ≥ grade 3"],
+    ans: 3,
+    explain: "ASIA D = Motor Incomplete ที่ key muscles ส่วนใหญ่ต่ำกว่า level injury มีกำลัง ≥ 3 (ยกต้านแรงโน้มถ่วงได้) — prognosis ดีที่สุดในกลุ่ม incomplete และมีโอกาสเดินได้สูง"
+  },
+  {
+    q: "Learned Non-Use ใน stroke คืออะไร?",
+    opts: ["ผู้ป่วยลืมว่าตัวเองมีแขน affected", "สมอง 'เรียนรู้' ว่าข้างอ่อนแรงใช้ไม่ได้เพราะถูกปล่อยทิ้ง", "Spasticity ที่เพิ่มขึ้นเรื่อยๆ", "Depression ที่ทำให้ไม่อยากออกกำลังกาย"],
+    ans: 1,
+    explain: "Learned non-use เกิดเมื่อผู้ป่วยชดเชยด้วยข้างดีจนสมองไม่ได้รับ feedback จากข้างอ่อนแรง ทำให้ cortical representation ของข้างนั้นหดลง — นี่คือเหตุผลหลักที่ CIMT ถูกพัฒนาขึ้น"
+  },
+  {
+    q: "FAC Level 4 หมายความว่าอะไร?",
+    opts: ["เดินได้อิสระทุกพื้นผิว", "ต้องการ supervision ตลอดเวลา", "เดินบน level surface ได้อิสระ แต่ยังต้องการ assist บน stairs/ramps", "Non-functional ambulation"],
+    ans: 2,
+    explain: "FAC 4 คือ Independent บน level surface แต่ยังต้องการ physical assist หรือ supervision บน uneven surface, stairs หรือ ramps — household ambulator ที่ดีแต่ยังไม่ community"
+  },
+  {
+    q: "Uhthoff's Phenomenon ในผู้ป่วย MS คืออะไร และควรจัดการอย่างไร?",
+    opts: ["อาการแย่ลงถาวรจากการออกกำลังกาย — หยุด exercise", "อาการแย่ลงชั่วคราวเมื่ออุณหภูมิสูง — ลดอุณหภูมิร่างกาย", "Spasticity ที่เพิ่มขึ้นจาก fatigue — พัก", "Cognitive decline จาก overexertion — ลด intensity"],
+    ans: 1,
+    explain: "Uhthoff's phenomenon คือ temporary worsening เมื่อ core temperature สูงขึ้น เพราะ demyelinated nerves conduct poorly ที่อุณหภูมิสูง — ไม่ใช่ relapse จริง! จัดการด้วย cooling vest, ออกกำลังกายในห้องเย็น, หยุดพักแล้วอาการจะดีขึ้น"
+  },
+  {
+    q: "AVERT Trial สอนอะไรเราเกี่ยวกับ Early Mobilization ใน Stroke?",
+    opts: ["ยิ่งเร็วยิ่งดีเสมอ mobilize ทันทีหลัง onset", "Very early + very high dose mobilization อาจให้ outcome แย่กว่า usual care", "ควรรอ 72 ชั่วโมงก่อนเริ่ม mobilize ทุกราย", "Mobilization ไม่มีประโยชน์ในระยะ acute"],
+    ans: 1,
+    explain: "AVERT Trial พบว่ากลุ่มที่ mobilize ก่อน 24 ชั่วโมงด้วย high dose มี favorable outcome น้อยกว่า usual care — สอนว่า timing และ dose ต้องพิจารณาตาม clinical stability ไม่ใช่แค่เร็วที่สุด"
+  },
+  {
+    q: "Central Cord Syndrome มีลักษณะอะไรที่ distinct ที่สุด?",
+    opts: ["ขาอ่อนแรงมากกว่าแขน", "แขนอ่อนแรงมากกว่าขา + bladder dysfunction", "สูญเสีย proprioception ทั้งสองข้าง", "Crossed weakness (right UE + left LE)"],
+    ans: 1,
+    explain: "Central cord syndrome — อ่อนแรง UE > LE เพราะ corticospinal fibers ของ UE อยู่ใกล้ central canal มากกว่า ร่วมกับ bladder dysfunction พบมากสุดในผู้สูงอายุที่มี cervical stenosis และมี hyperextension injury"
+  },
+  {
+    q: "MoCA ดีกว่า MMSE อย่างไรในการประเมินผู้ป่วย stroke?",
+    opts: ["ใช้เวลาน้อยกว่า", "Sensitive ต่อ Mild Cognitive Impairment และ executive function", "ราคาถูกกว่า", "ไม่ต้องใช้อุปกรณ์ใดๆ"],
+    ans: 1,
+    explain: "MoCA ออกแบบมาเพื่อ detect MCI โดยเฉพาะ มี items ที่วัด executive function, attention, และ visuospatial skills ได้ดีกว่า MMSE — ผู้ป่วย stroke มักมี executive dysfunction แม้ MMSE ปกติ"
+  }
+];
+
+let score = 0, answered = 0;
+
+function buildQuiz() {
+  const c = document.getElementById('quiz-container');
+  c.innerHTML = '';
+  quizData.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'quiz-card';
+    card.innerHTML = `
+      <div class="quiz-q">
+        <div class="quiz-num">ข้อที่ ${i+1} / ${quizData.length}</div>
+        ${q.q}
+      </div>
+      <div class="quiz-options">
+        ${q.opts.map((o, j) => `<button class="quiz-opt" onclick="answerQuiz(this,${i},${j})">${o}</button>`).join('')}
+      </div>
+      <div class="quiz-explain" id="explain-${i}">💡 ${q.explain}</div>
+    `;
+    c.appendChild(card);
+  });
+}
+
+function answerQuiz(btn, qi, optIdx) {
+  const card = btn.closest('.quiz-card');
+  if (card.dataset.answered) return;
+  card.dataset.answered = 'true';
+  answered++;
+  btn.closest('.quiz-options').querySelectorAll('.quiz-opt').forEach(o => o.style.pointerEvents = 'none');
+  if (optIdx === quizData[qi].ans) { btn.classList.add('correct'); score++; }
+  else { btn.classList.add('wrong'); btn.closest('.quiz-options').querySelectorAll('.quiz-opt')[quizData[qi].ans].classList.add('correct'); }
+  document.getElementById('explain-' + qi).classList.add('show');
+  document.getElementById('score-display').textContent = score + '/' + answered;
+  document.getElementById('score-desc').textContent = answered === quizData.length
+    ? (score >= 8 ? '🎉 ยอดเยี่ยม!' : score >= 6 ? '👍 ดีมาก ทบทวนอีกนิด' : '📚 ลองอ่านซ้ำแล้วทำใหม่นะครับ')
+    : `ตอบแล้ว ${answered}/${quizData.length} ข้อ`;
+}
+
+function resetQuiz() {
+  score = 0; answered = 0;
+  document.getElementById('score-display').textContent = '0/0';
+  document.getElementById('score-desc').textContent = 'เริ่มตอบคำถามเพื่อดูคะแนน';
+  buildQuiz();
+}
+
+// GLOSSARY
+const glossaryData = [
+  { term: 'Neuroplasticity', def: 'ความสามารถของสมองในการ reorganize โครงสร้างและ function เพื่อตอบสนองต่อ experience, injury และ learning' },
+  { term: 'Learned Non-Use', def: 'ปรากฏการณ์ที่สมอง "เรียนรู้" ว่า affected limb ใช้ไม่ได้ เพราะถูกปล่อยทิ้งและชดเชยด้วยข้างดี — เป็น basis ของ CIMT' },
+  { term: 'CIMT', def: 'Constraint-Induced Movement Therapy — จำกัดการใช้แขนข้างดีเพื่อ force use ข้างอ่อนแรง อิง use-dependent cortical reorganization' },
+  { term: 'RAGT', def: 'Robotic-Assisted Gait Training — การฝึกเดินโดยใช้อุปกรณ์ robotic เช่น EksoNR, HIWIN, Lokomat ช่วย guide การเคลื่อนไหวขา' },
+  { term: 'Brunnstrom Stages', def: 'ระบบจำแนก recovery ของ stroke 6 ระยะ จาก flaccid (Stage 1) ผ่าน synergy pattern (Stage 3) จนถึง near normal (Stage 6)' },
+  { term: 'Synergy Pattern', def: 'รูปแบบการเคลื่อนไหวเป็น "ชุด" ที่ไม่สามารถแยกส่วนได้ใน stroke — Flexion synergy (UE): shoulder abd + elbow flex / Extension synergy (LE): hip ext + knee ext + plantarflex' },
+  { term: 'Pusher Syndrome', def: 'ผู้ป่วย stroke ที่ดันตัวไปทาง hemiplegic side และต่อต้านการแก้ไข เกิดจาก lesion ใน posterolateral thalamus' },
+  { term: 'ASIA Scale', def: 'American Spinal Injury Association Impairment Scale — จำแนก SCI จาก A (complete) ถึง E (normal) ตาม motor และ sensory function ที่ S4–S5' },
+  { term: 'Incomplete SCI', def: 'SCI ที่ยังมี motor หรือ sensory function เหลืออยู่ต่ำกว่าระดับ injury รวมถึง sacral sparing (ASIA B, C, D)' },
+  { term: 'Central Cord Syndrome', def: 'Incomplete SCI ที่พบบ่อยที่สุด — UE อ่อนแรงมากกว่า LE + bladder dysfunction มักเกิดใน elderly ที่มี cervical stenosis' },
+  { term: 'Brown-Séquard Syndrome', def: 'Hemisection ของ spinal cord — Ipsilateral: motor + proprioception ↓ / Contralateral: pain + temperature ↓ Prognosis ดีที่สุดในกลุ่ม incomplete' },
+  { term: 'FAC', def: 'Functional Ambulation Category — วัดความสามารถเดิน 6 ระดับ (0–5) จาก non-functional ถึง independent ทุกพื้นผิว' },
+  { term: 'Berg Balance Scale', def: 'เครื่องมือวัด static และ dynamic balance 14 items คะแนน 0–56 คะแนน &lt;45 = fall risk สูง' },
+  { term: 'FIM', def: 'Functional Independence Measure — วัด ADL + mobility + cognitive function 18 items คะแนน 18–126 ครอบคลุมกว่า Barthel Index' },
+  { term: 'mRS', def: 'Modified Rankin Scale — วัด global disability post-stroke 0–6 คะแนน ≤2 = favorable outcome คะแนน 6 = เสียชีวิต' },
+  { term: 'Motor Learning', def: 'กระบวนการได้มาซึ่งทักษะการเคลื่อนไหวอย่างถาวร วัดจาก retention และ transfer ไม่ใช่แค่ performance ขณะฝึก' },
+  { term: 'FES', def: 'Functional Electrical Stimulation — กระตุ้นกล้ามเนื้อด้วยไฟฟ้า ขณะทำ functional task เช่น foot drop stimulator ขณะเดิน' },
+  { term: 'Diaschisis', def: 'ภาวะที่สมองส่วนที่ไม่ได้รับบาดเจ็บโดยตรงแต่ connected กับส่วนที่ injured หยุดทำงานชั่วคราว เมื่อ resolve แล้ว spontaneous recovery จะเกิดขึ้น' },
+  { term: 'Uhthoff Phenomenon', def: 'อาการแย่ลงชั่วคราวใน MS เมื่ออุณหภูมิร่างกายสูงขึ้น ไม่ใช่ relapse จริง — จะดีขึ้นเมื่อเย็นลง' },
+  { term: 'LSVT BIG', def: 'Lee Silverman Voice Treatment BIG — PT protocol สำหรับ Parkinson เน้น high amplitude movement ทุก gesture เพราะผู้ป่วยมี perceptual deficit เรื่อง movement size' },
+  { term: 'Rancho Los Amigos', def: 'Scale วัด cognitive recovery หลัง TBI 8 ระดับ จาก No response (I) ถึง Purposeful-appropriate (VIII) ใช้ guide PT approach ในแต่ละ stage' },
+  { term: 'rTMS', def: 'Repetitive Transcranial Magnetic Stimulation — non-invasive brain stimulation ที่ modulate cortical excitability ใช้เสริม motor recovery post-stroke' },
+  { term: 'MoCA', def: 'Montreal Cognitive Assessment — cognitive screening tool ที่ sensitive ต่อ MCI และ executive dysfunction มากกว่า MMSE เหมาะกับ post-stroke' },
+  { term: 'Mirror Therapy', def: 'การใช้กระจกสะท้อนมือข้างดี ทำให้สมองตีความว่ามือข้างอ่อนแรงกำลังเคลื่อนไหว ใช้ฟื้นฟู UE ใน stroke และลด phantom pain ใน amputation' },
+  { term: 'ICF', def: 'International Classification of Functioning, Disability and Health — framework WHO ที่จัดการ rehab ผ่าน 3 domain: Body function, Activity, Participation' },
+  { term: 'Fugl-Meyer Assessment', def: 'เครื่องมือวัด motor recovery ใน stroke แบบ comprehensive คะแนน UE 0–66 คะแนน LE 0–34 — Gold standard สำหรับ motor assessment' },
+];
+
+function buildGlossary(filter = '') {
+  const list = document.getElementById('glossary-list');
+  list.innerHTML = '';
+  const filtered = glossaryData.filter(g =>
+    g.term.toLowerCase().includes(filter.toLowerCase()) ||
+    g.def.toLowerCase().includes(filter.toLowerCase())
+  );
+  if (!filtered.length) {
+    list.innerHTML = '<div style="color:var(--text-muted);font-size:13px;padding:1rem">ไม่พบคำที่ค้นหา</div>';
+    return;
+  }
+  filtered.forEach(g => {
+    const item = document.createElement('div');
+    item.className = 'glossary-item';
+    item.innerHTML = `<div class="glossary-term">${g.term}</div><div class="glossary-def">${g.def}</div>`;
+    list.appendChild(item);
+  });
+}
+
+function searchGlossary(val) { buildGlossary(val); }
+
+// INIT
+buildQuiz();
+buildGlossary();
+</script>
+</body>
+</html>
